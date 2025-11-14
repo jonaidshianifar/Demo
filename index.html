@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Human-Reward Q-Learning Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 16px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding: 16px;
+      max-width: 1000px;
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    #env-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #grid {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      background: #fafafa;
+    }
+
+    #controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
+
+    #controls button {
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    #nextActionBtn {
+      background: #2563eb;
+      color: white;
+    }
+
+    #resetBtn {
+      background: #6b7280;
+      color: white;
+    }
+
+    #rewardButtons {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    #rewardButtons button {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .reward-good {
+      background: #16a34a;
+      color: white;
+    }
+
+    .reward-neutral {
+      background: #d1d5db;
+      color: #111827;
+    }
+
+    .reward-bad {
+      background: #ef4444;
+      color: white;
+    }
+
+    #status {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #374151;
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    #params-card {
+      min-width: 260px;
+      max-width: 320px;
+    }
+
+    #params-card label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+
+    #params-card input[type="number"],
+    #params-card input[type="range"] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    #info-card {
+      min-width: 260px;
+      max-width: 320px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    #q-values {
+      font-family: monospace;
+      font-size: 0.8rem;
+      max-height: 180px;
+      overflow-y: auto;
+      background: #f9fafb;
+      border-radius: 4px;
+      padding: 6px;
+      border: 1px solid #e5e7eb;
+      margin-top: 8px;
+    }
+
+    footer {
+      font-size: 0.75rem;
+      color: #6b7280;
+      padding: 8px 0 16px 0;
+    }
+
+    @media (max-width: 800px) {
+      main {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Human-Reward Q-Learning Demo</h1>
+    <div style="font-size:0.9rem;color:#4b5563;">
+      Agent chooses an action. You choose the reward. The policy learns from you.
+    </div>
+  </header>
+
+  <main>
+    <!-- Environment + Controls -->
+    <section class="card" id="env-card">
+      <canvas id="grid" width="400" height="400"></canvas>
+      <div id="controls">
+        <button id="nextActionBtn">Next Action (Agent Move)</button>
+        <button id="resetBtn">Reset Agent</button>
+
+        <div id="rewardButtons">
+          <button class="reward-bad" data-reward="-1">👎 -1</button>
+          <button class="reward-neutral" data-reward="0">😐 0</button>
+          <button class="reward-good" data-reward="1">👍 +1</button>
+        </div>
+
+        <div id="status"></div>
+      </div>
+    </section>
+
+    <!-- Parameters + Q-values -->
+    <section class="card" id="params-card">
+      <h2 style="margin-top:0;font-size:1rem;">Learning Parameters</h2>
+
+      <label>
+        Grid Size (N x N)
+        <span id="gridSizeLabel">5</span>
+      </label>
+      <input type="range" id="gridSize" min="3" max="8" value="5" />
+
+      <label>
+        Alpha (learning rate)
+        <input type="number" id="alphaInput" step="0.01" min="0" max="1" value="0.2" />
+      </label>
+
+      <label>
+        Gamma (discount)
+        <input type="number" id="gammaInput" step="0.01" min="0" max="1" value="0.9" />
+      </label>
+
+      <label>
+        Epsilon (exploration)
+        <input type="number" id="epsilonInput" step="0.01" min="0" max="1" value="0.2" />
+      </label>
+
+      <div style="margin-top:8px;font-size:0.85rem;">
+        <strong>Q-values for current state</strong>
+        <div id="q-values"></div>
+      </div>
+    </section>
+
+    <!-- Explanation -->
+    <section class="card" id="info-card">
+      <h2 style="margin-top:0;font-size:1rem;">How it works</h2>
+      <ol>
+        <li>Click <strong>Next Action</strong>.<br>
+            The agent chooses an action with ε-greedy Q-learning and moves in the grid.
+        </li>
+        <li>Look at the move and click a reward:
+          <ul>
+            <li>👎 <code>-1</code> = bad move</li>
+            <li>😐 <code>0</code> = neutral</li>
+            <li>👍 <code>+1</code> = good move</li>
+          </ul>
+        </li>
+        <li>The Q-table is updated with your reward. Over time, the agent learns what
+            <em>you</em> consider good or bad.</li>
+      </ol>
+
+      <p>
+        This is a simple example of <strong>human-in-the-loop reinforcement learning</strong>,
+        where the reward signal comes from the user instead of the environment.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    Drop this file in a GitHub repo and enable GitHub Pages to run it in the browser.
+  </footer>
+
+  <script>
+    // ==========================
+    // Environment + RL Settings
+    // ==========================
+    const canvas = document.getElementById("grid");
+    const ctx = canvas.getContext("2d");
+    const statusEl = document.getElementById("status");
+    const qValuesEl = document.getElementById("q-values");
+
+    const nextActionBtn = document.getElementById("nextActionBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const rewardButtons = document.querySelectorAll("#rewardButtons button");
+
+    const gridSizeSlider = document.getElementById("gridSize");
+    const gridSizeLabel = document.getElementById("gridSizeLabel");
+    const alphaInput = document.getElementById("alphaInput");
+    const gammaInput = document.getElementById("gammaInput");
+    const epsilonInput = document.getElementById("epsilonInput");
+
+    let N = parseInt(gridSizeSlider.value, 10);    // Grid is N x N
+    let cellSize = canvas.width / N;
+
+    // Agent state (x, y)
+    let state = { x: 0, y: 0 };
+    const numActions = 4; // 0: up, 1: right, 2: down, 3: left
+
+    // Q-table: Q[stateIndex][action] = value
+    let Q;
+
+    // Last (s, a) waiting for reward
+    let waitingForReward = false;
+    let lastStateIndex = null;
+    let lastAction = null;
+
+    // RL hyperparameters
+    function getAlpha() { return parseFloat(alphaInput.value); }
+    function getGamma() { return parseFloat(gammaInput.value); }
+    function getEpsilon() { return parseFloat(epsilonInput.value); }
+
+    // ==========================
+    // Helper functions
+    // ==========================
+    function stateToIndex(s) {
+      return s.y * N + s.x;
+    }
+
+    function indexToState(idx) {
+      const y = Math.floor(idx / N);
+      const x = idx % N;
+      return { x, y };
+    }
+
+    function initQTable() {
+      const numStates = N * N;
+      Q = new Array(numStates);
+      for (let i = 0; i < numStates; i++) {
+        Q[i] = new Array(numActions).fill(0);
+      }
+    }
+
+    function resetAgent() {
+      state = { x: 0, y: 0 };
+      waitingForReward = false;
+      lastStateIndex = null;
+      lastAction = null;
+      render();
+      updateQValuesDisplay();
+      setStatus("Agent reset to (0,0). Click 'Next Action' to start.");
+    }
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw grid
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#e5e7eb";
+      for (let i = 0; i <= N; i++) {
+        // vertical
+        ctx.beginPath();
+        ctx.moveTo(i * cellSize, 0);
+        ctx.lineTo(i * cellSize, canvas.height);
+        ctx.stroke();
+
+        // horizontal
+        ctx.beginPath();
+        ctx.moveTo(0, i * cellSize);
+        ctx.lineTo(canvas.width, i * cellSize);
+        ctx.stroke();
+      }
+
+      // Draw agent as a filled circle
+      const padding = cellSize * 0.15;
+      const cx = state.x * cellSize + cellSize / 2;
+      const cy = state.y * cellSize + cellSize / 2;
+      const radius = (cellSize / 2) - padding;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#2563eb";
+      ctx.fill();
+    }
+
+    function updateQValuesDisplay() {
+      const sIdx = stateToIndex(state);
+      const q = Q[sIdx];
+      const actions = ["up", "right", "down", "left"];
+
+      let html = "";
+      for (let a = 0; a < numActions; a++) {
+        html += actions[a].padEnd(5, " ") + ": " + q[a].toFixed(3) + "<br>";
+      }
+      qValuesEl.innerHTML = html;
+    }
+
+    // Epsilon-greedy action selection
+    function chooseAction(sIdx) {
+      const eps = getEpsilon();
+      if (Math.random() < eps) {
+        // Explore
+        return Math.floor(Math.random() * numActions);
+      } else {
+        // Exploit
+        const qs = Q[sIdx];
+        let bestA = 0;
+        let bestQ = qs[0];
+        for (let a = 1; a < numActions; a++) {
+          if (qs[a] > bestQ) {
+            bestQ = qs[a];
+            bestA = a;
+          }
+        }
+        return bestA;
+      }
+    }
+
+    function stepEnvironment(action) {
+      // Copy state
+      let { x, y } = state;
+
+      if (action === 0 && y > 0) y--;           // up
+      else if (action === 1 && x < N - 1) x++;  // right
+      else if (action === 2 && y < N - 1) y++;  // down
+      else if (action === 3 && x > 0) x--;      // left
+      // otherwise hit wall and stay
+
+      state = { x, y };
+    }
+
+    // Q-learning update using human reward
+    function applyReward(reward) {
+      if (!waitingForReward || lastStateIndex === null || lastAction === null) {
+        setStatus("No action waiting for reward. Click 'Next Action' first.");
+        return;
+      }
+
+      const alpha = getAlpha();
+      const gamma = getGamma();
+
+      const sIdx = lastStateIndex;
+      const a = lastAction;
+      const sPrimeIdx = stateToIndex(state);
+
+      const maxQNext = Math.max(...Q[sPrimeIdx]);
+      const oldQ = Q[sIdx][a];
+      const target = reward + gamma * maxQNext;
+      Q[sIdx][a] = oldQ + alpha * (target - oldQ);
+
+      waitingForReward = false;
+      lastStateIndex = null;
+      lastAction = null;
+
+      render();
+      updateQValuesDisplay();
+      setStatus(`Applied reward ${reward.toFixed(2)}. Q updated. Now click 'Next Action' again.`);
+    }
+
+    // ==========================
+    // UI Event Handlers
+    // ==========================
+    nextActionBtn.addEventListener("click", () => {
+      if (waitingForReward) {
+        setStatus("Please give a reward for the last action before continuing.");
+        return;
+      }
+
+      const sIdx = stateToIndex(state);
+      const action = chooseAction(sIdx);
+
+      // Store (s, a) to update after reward
+      lastStateIndex = sIdx;
+      lastAction = action;
+
+      // Step environment
+      stepEnvironment(action);
+      render();
+      updateQValuesDisplay();
+
+      const actionNames = ["up", "right", "down", "left"];
+      setStatus(`Agent chose action: ${actionNames[action]}. Please give a reward.`);
+      waitingForReward = true;
+    });
+
+    resetBtn.addEventListener("click", () => {
+      resetAgent();
+    });
+
+    rewardButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const r = parseFloat(btn.dataset.reward);
+        applyReward(r);
+      });
+    });
+
+    gridSizeSlider.addEventListener("input", () => {
+      N = parseInt(gridSizeSlider.value, 10);
+      gridSizeLabel.textContent = N.toString();
+      cellSize = canvas.width / N;
+      initQTable();
+      resetAgent();
+      setStatus(`Grid size changed to ${N} x ${N}. Q-table reinitialized.`);
+    });
+
+    // When alpha/gamma/epsilon change, just update status (no need to reset Q)
+    [alphaInput, gammaInput, epsilonInput].forEach(input => {
+      input.addEventListener("change", () => {
+        setStatus(`Updated parameters: α=${getAlpha()}, γ=${getGamma()}, ε=${getEpsilon()}.`);
+      });
+    });
+
+    // ==========================
+    // Initial setup
+    // ==========================
+    initQTable();
+    resetAgent();
+    setStatus("Ready. Click 'Next Action' and then give a reward.");
+  </script>
+</body>
+</html>
