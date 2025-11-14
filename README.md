@@ -1,4 +1,4 @@
-# 🤖 Human-Reward Q-Learning Demo  
+# 🤖 Human in the loop Reinforcement learning (RL) Demo  
 **Teach an RL Agent Using Your Own Feedback — Interactive, Visual, Beginner-Friendly**
 
 Have you ever wondered how Reinforcement Learning agents actually learn?  
