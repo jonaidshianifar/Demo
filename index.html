@@ -22,21 +22,6 @@
       --transition-fast: 0.2s ease;
     }
 
-    [data-theme="light"] {
-      --bg: #f5f5f5;
-      --card-bg: #ffffff;
-      --card-border: #e5e7eb;
-      --text: #111827;
-      --text-muted: #6b7280;
-      --accent: #2563eb;
-      --accent-soft: rgba(37,99,235,0.12);
-      --danger: #ef4444;
-      --success: #16a34a;
-      --neutral: #6b7280;
-      --grid-line: #e5e7eb;
-      --shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-
     * {
       box-sizing: border-box;
     }
@@ -105,7 +90,6 @@
       border: 1px solid var(--card-border);
     }
 
-    /* order for vertical layout: main game at top, then q-card, then params */
     #env-card { order: 0; }
     #q-card { order: 1; }
     #params-card { order: 2; }
@@ -115,16 +99,6 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
-    }
-
-    #q-card h2,
-    #params-card h2 {
-      margin-top: 0;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--text-muted);
     }
 
     .cards-right {
@@ -276,6 +250,16 @@
       min-height: 1.2em;
     }
 
+    #params-card h2,
+    #q-card h2 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
     #params-card {
       font-size: 0.84rem;
     }
@@ -317,7 +301,7 @@
     #q-values {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 0.8rem;
-      max-height: 140px;
+      max-height: 100px;
       overflow-y: auto;
       background: radial-gradient(circle at top left, rgba(148,163,184,0.14), rgba(15,23,42,0.8));
       border-radius: 8px;
@@ -325,6 +309,92 @@
       border: 1px solid var(--card-border);
       margin-top: 4px;
       color: var(--text-muted);
+    }
+
+    .q-subtitle {
+      font-size: 0.8rem;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      color: var(--text-muted);
+    }
+
+    #q-max-matrix,
+    #q-all-values {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.78rem;
+      max-height: 120px;
+      overflow: auto;
+      border-radius: 8px;
+      padding: 6px 8px;
+      border: 1px solid var(--card-border);
+      margin-top: 4px;
+    }
+
+    /* Matrix table for max Q (heatmap) */
+    .q-matrix {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .q-matrix td {
+      border: 1px solid var(--card-border);
+      padding: 2px 4px;
+      text-align: center;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .q-cell-arrow {
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+
+    .q-cell-val {
+      font-size: 0.75rem;
+      line-height: 1.1;
+    }
+
+    .q-matrix-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .q-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .q-toggle input {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .q-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .q-legend-bar {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        rgb(15,23,42) 0%,
+        rgb(21,94,117) 40%,
+        rgb(34,197,94) 100%
+      );
+      border: 1px solid var(--card-border);
     }
 
     footer {
@@ -345,19 +415,174 @@
       text-decoration: underline;
     }
 
-    #themeToggle {
-      border-color: var(--accent-soft);
-      background: rgba(15,23,42,0.9);
-      color: var(--text-muted);
+    /* Pills (used in research + maybe others) */
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding-inline: 10px;
-      white-space: nowrap;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      border: 1px solid var(--accent-soft);
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      background: rgba(15,23,42,0.8);
     }
 
-    #themeToggle span {
+    .pill .emoji {
+      font-size: 0.9rem;
+    }
+
+    /* Research papers collapsible section */
+    .paper-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .paper-item {
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: rgba(15,23,42,0.7);
+      overflow: hidden;
+    }
+
+    .paper-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .paper-title {
+      text-align: left;
+      font-weight: 500;
+      flex: 1;
+      padding-right: 8px;
+    }
+
+    .paper-toggle-icon {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .paper-body {
+      display: none;
+      padding: 6px 10px 10px;
+      border-top: 1px solid var(--card-border);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .paper-item.open .paper-body {
+      display: block;
+    }
+
+    .paper-item.open .paper-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .paper-meta {
       font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: -4px;
+      margin-bottom: 4px;
+    }
+
+    .paper-btn {
+      display: inline-block;
+      margin: 4px 0 4px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .paper-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Social Links Section */
+    #social-links-card h2 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--accent-soft);
+      background: rgba(15,23,42,0.85);
+      color: var(--text);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .social-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .cards-right {
+        flex-direction: column;
+      }
+
+      footer {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 12px 12px;
+      }
+
+      #canvas-wrapper {
+        padding: 6px;
+      }
+
+      .button-row {
+        justify-content: center;
+      }
     }
 
     /* Modal */
@@ -405,6 +630,7 @@
       font-size: 0.8rem;
       border-color: var(--accent-soft);
       background: rgba(15,23,42,0.7);
+      cursor: pointer;
     }
 
     .modal-body {
@@ -437,6 +663,7 @@
       box-shadow: 0 8px 24px rgba(59,130,246,0.45);
       font-size: 0.85rem;
       padding-inline: 14px;
+      cursor: pointer;
     }
 
     .secondary-btn-link {
@@ -466,40 +693,6 @@
       padding: 0 4px;
       font-size: 0.78rem;
     }
-
-    @media (max-width: 900px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 12px;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .cards-right {
-        flex-direction: column;
-      }
-
-      footer {
-        text-align: left;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .card {
-        padding: 12px 12px;
-      }
-
-      #canvas-wrapper {
-        padding: 6px;
-      }
-
-      .button-row {
-        justify-content: center;
-      }
-    }
   </style>
 </head>
 <body>
@@ -514,13 +707,9 @@
       <button id="helpBtn" type="button">
         <span>❔</span><span>How it works</span>
       </button>
-      <a href="rl.html" class="header-link-btn">
+      <a href="RL.html" class="header-link-btn">
         <span>📘</span><span>RL basics page</span>
       </a>
-      <button id="themeToggle" type="button">
-        <span id="themeIcon">🌙</span>
-        <span id="themeLabel">Dark</span>
-      </button>
     </div>
   </header>
 
@@ -548,13 +737,32 @@
       </div>
     </section>
 
-    <!-- RIGHT COLUMN: Q-values (middle) + parameters (bottom) -->
+    <!-- RIGHT COLUMN -->
     <div class="cards-right">
+      <!-- Q-values card with heatmap & table -->
       <section class="card" id="q-card">
-        <h2>Q-values (current state)</h2>
+        <h2>Q-values</h2>
         <div id="q-values"></div>
+
+        <div class="q-matrix-header">
+          <h3 class="q-subtitle">Max Q per state (grid)</h3>
+          <label class="q-toggle">
+            <input type="checkbox" id="showArrowsToggle" checked />
+            <span>Show best action</span>
+          </label>
+        </div>
+        <div id="q-max-matrix"></div>
+        <div class="q-legend">
+          <span>Low value</span>
+          <div class="q-legend-bar"></div>
+          <span>High value</span>
+        </div>
+
+        <h3 class="q-subtitle">All Q-values for all states</h3>
+        <div id="q-all-values"></div>
       </section>
 
+      <!-- Learning parameters -->
       <section class="card" id="params-card">
         <h2>Learning Parameters</h2>
 
@@ -582,8 +790,86 @@
     </div>
   </main>
 
+  <!-- Research papers section -->
+  <section class="card" id="papers-card" style="max-width:1100px;width:100%;margin:0 16px 10px;">
+    <div class="pill"><span class="emoji">📄</span><span>Read My Research Papers</span></div>
+    <h2 style="margin-top:4px;font-size:0.9rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-muted);">
+      Recent Work & Publications
+    </h2>
+
+    <div class="paper-list">
+      <article class="paper-item">
+        <button class="paper-header" type="button">
+          <span class="paper-title">Adaptive Scalarization in Multi-Objective Reinforcement Learning</span>
+          <span class="paper-toggle-icon">▼</span>
+        </button>
+        <div class="paper-body">
+          <p>
+            Introduces a Dynamic Weight Adjustment (DWA) technique to improve hypervolume and
+            sparsity metrics for robotic arm control. Evaluates DWA across SAC and PPO-based
+            multi-objective RL frameworks.
+          </p>
+          <p class="paper-meta">2024 · Multi-Objective RL · Robotic Control</p>
+          <a href="#" class="paper-btn">View paper (coming soon)</a>
+        </div>
+      </article>
+
+      <article class="paper-item">
+        <button class="paper-header" type="button">
+          <span class="paper-title">Enhancing MORL via Transfer Learning from Single-Objective Tasks</span>
+          <span class="paper-toggle-icon">▼</span>
+        </button>
+        <div class="paper-body">
+          <p>
+            Studies how SAC pretraining stabilizes and accelerates CAPQL in multi-objective
+            environments such as MO-HalfCheetah, improving sample efficiency and policy quality.
+          </p>
+          <p class="paper-meta">2025 · Transfer Learning · Actor-Critic</p>
+          <a href="#" class="paper-btn">View paper (coming soon)</a>
+        </div>
+      </article>
+
+      <article class="paper-item">
+        <button class="paper-header" type="button">
+          <span class="paper-title">Cooperative Evolutionary Reinforcement Learning for Continuous Control</span>
+          <span class="paper-toggle-icon">▼</span>
+        </button>
+        <div class="paper-body">
+          <p>
+            Explores hybrid Evolutionary Algorithm + RL frameworks (CoERL-style) for building
+            diverse policy sets on continuous-control MORL benchmarks, combining preference
+            optimisation with deep RL.
+          </p>
+          <p class="paper-meta">2025 · Evolutionary RL · Continuous Control</p>
+          <a href="#" class="paper-btn">View paper (coming soon)</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Social links section -->
+  <section class="card" id="social-links-card" style="max-width:1100px;width:100%;margin:0 16px 10px;">
+    <h2>Connect With Me</h2>
+    <div class="social-links">
+      <a href="https://github.com/jonaidshianifar" target="_blank" class="social-btn github">
+        <span>🐙</span> GitHub
+      </a>
+
+      <a href="https://scholar.google.com/" target="_blank" class="social-btn scholar">
+        <span>🎓</span> Google Scholar
+      </a>
+
+      <a href="https://www.linkedin.com/" target="_blank" class="social-btn linkedin">
+        <span>💼</span> LinkedIn
+      </a>
+    </div>
+  </section>
+
   <footer>
-    Made by <a href="https://github.com/jonaidshianifar" target="_blank" rel="noopener noreferrer">Jonaid Shianifar</a>.
+    Made by
+    <a href="https://github.com/jonaidshianifar" target="_blank" rel="noopener noreferrer">
+      Jonaid Shianifar
+    </a>.
   </footer>
 
   <!-- HOW IT WORKS MODAL -->
@@ -619,7 +905,7 @@
         </p>
       </div>
       <div class="modal-footer">
-        <a href="rl.html" class="secondary-btn-link">
+        <a href="RL.html" class="secondary-btn-link">
           <span>📘</span><span>Go to RL basics page</span>
         </a>
         <button class="primary-btn" type="button" id="modalStartBtn">Got it, start!</button>
@@ -628,41 +914,6 @@
   </div>
 
   <script>
-    // ==========================
-    // Theme handling (dark / light)
-    // ==========================
-    const themeToggleBtn = document.getElementById("themeToggle");
-    const themeIcon = document.getElementById("themeIcon");
-    const themeLabel = document.getElementById("themeLabel");
-
-    function applyTheme(theme) {
-      document.body.setAttribute("data-theme", theme);
-      if (theme === "light") {
-        themeIcon.textContent = "☀️";
-        themeLabel.textContent = "Light";
-      } else {
-        themeIcon.textContent = "🌙";
-        themeLabel.textContent = "Dark";
-      }
-      localStorage.setItem("humanRewardRLTheme", theme);
-    }
-
-    (function initTheme() {
-      const stored = localStorage.getItem("humanRewardRLTheme");
-      if (stored === "light" || stored === "dark") {
-        applyTheme(stored);
-      } else {
-        const prefersDark = window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches;
-        applyTheme(prefersDark ? "dark" : "light");
-      }
-    })();
-
-    themeToggleBtn.addEventListener("click", () => {
-      const current = document.body.getAttribute("data-theme") || "dark";
-      applyTheme(current === "dark" ? "light" : "dark");
-    });
-
     // ==========================
     // Modal logic
     // ==========================
@@ -701,6 +952,9 @@
     const ctx = canvas.getContext("2d");
     const statusEl = document.getElementById("status");
     const qValuesEl = document.getElementById("q-values");
+    const qMaxMatrixEl = document.getElementById("q-max-matrix");
+    const qAllValuesEl = document.getElementById("q-all-values");
+    const showArrowsToggle = document.getElementById("showArrowsToggle");
 
     const nextActionBtn = document.getElementById("nextActionBtn");
     const resetBtn = document.getElementById("resetBtn");
@@ -747,6 +1001,12 @@
     // Helpers
     function stateToIndex(s) {
       return s.y * N + s.x;
+    }
+
+    function indexToState(idx) {
+      const y = Math.floor(idx / N);
+      const x = idx % N;
+      return { x, y };
     }
 
     function initQTable() {
@@ -807,14 +1067,103 @@
       const q = Q[sIdx];
       const actions = ["up", "right", "down", "left"];
 
+      // 1) Current state Q-values
       let html = "";
       for (let a = 0; a < numActions; a++) {
         html += actions[a].padEnd(5, " ") + ": " + q[a].toFixed(3) + "<br>";
       }
       qValuesEl.innerHTML = html;
+
+      // ---- compute global min/max of max-Q across all states for color scaling ----
+      let minQ = Infinity;
+      let maxQ = -Infinity;
+      const maxPerState = [];
+
+      for (let idx = 0; idx < Q.length; idx++) {
+        const maxVal = Math.max(...Q[idx]);
+        maxPerState.push(maxVal);
+        if (maxVal < minQ) minQ = maxVal;
+        if (maxVal > maxQ) maxQ = maxVal;
+      }
+
+      if (!isFinite(minQ)) {
+        minQ = 0;
+        maxQ = 0;
+      }
+
+      function normalize(val) {
+        if (maxQ === minQ) return 0.5;
+        let t = (val - minQ) / (maxQ - minQ);
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
+        return t;
+      }
+
+      function heatColor(t) {
+        const start = { r: 15, g: 23, b: 42 };   // low
+        const end   = { r: 34, g: 197, b: 94 };  // high
+        const r = Math.round(start.r + t * (end.r - start.r));
+        const g = Math.round(start.g + t * (end.g - start.g));
+        const b = Math.round(start.b + t * (end.b - start.b));
+        return { r, g, b };
+      }
+
+      function greedyAction(idx) {
+        const qs = Q[idx];
+        let bestA = 0;
+        let bestQ = qs[0];
+        for (let a = 1; a < numActions; a++) {
+          if (qs[a] > bestQ) {
+            bestQ = qs[a];
+            bestA = a;
+          }
+        }
+        return bestA;
+      }
+
+      const showArrows = showArrowsToggle.checked;
+
+      // 2) Max Q per state as N x N color-coded matrix
+      let matrixHtml = '<table class="q-matrix"><tbody>';
+      for (let y = 0; y < N; y++) {
+        matrixHtml += "<tr>";
+        for (let x = 0; x < N; x++) {
+          const idx = y * N + x;
+          const maxVal = maxPerState[idx];
+          const t = normalize(maxVal);
+          const col = heatColor(t);
+
+          const textColor = t > 0.6 ? "#020617" : "#e5e7eb";
+
+          let arrowHtml = "";
+          if (showArrows) {
+            const a = greedyAction(idx);
+            const arrowChars = ["↑", "→", "↓", "←"];
+            arrowHtml = `<div class="q-cell-arrow">${arrowChars[a]}</div>`;
+          }
+          const valHtml = `<div class="q-cell-val">${maxVal.toFixed(2)}</div>`;
+
+          matrixHtml += `<td style="background-color: rgb(${col.r},${col.g},${col.b}); color: ${textColor};">${arrowHtml}${valHtml}</td>`;
+        }
+        matrixHtml += "</tr>";
+      }
+      matrixHtml += "</tbody></table>";
+      qMaxMatrixEl.innerHTML = matrixHtml;
+
+      // 3) All Q-values for all states
+      let allHtml = "";
+      for (let idx = 0; idx < Q.length; idx++) {
+        const s = indexToState(idx);
+        allHtml += `s=(${s.x},${s.y}): `;
+        for (let a = 0; a < numActions; a++) {
+          allHtml += `${actions[a]}=${Q[idx][a].toFixed(2)} `;
+        }
+        allHtml += "<br>";
+      }
+      qAllValuesEl.innerHTML = allHtml;
     }
 
-    function greedyAction(sIdx) {
+    function greedyActionIndex(sIdx) {
       const qs = Q[sIdx];
       let bestA = 0;
       let bestQ = qs[0];
@@ -832,7 +1181,7 @@
       if (Math.random() < eps) {
         return Math.floor(Math.random() * numActions);
       } else {
-        return greedyAction(sIdx);
+        return greedyActionIndex(sIdx);
       }
     }
 
@@ -884,12 +1233,10 @@
     function runPolicyDemo() {
       if (isRunningPolicyDemo) return;
 
-      // stop any pending reward state
       waitingForReward = false;
       lastStateIndex = null;
       lastAction = null;
 
-      // reset position but keep Q-table
       state = { x: 0, y: 0 };
       render();
       updateQValuesDisplay();
@@ -899,11 +1246,11 @@
       setStatus("Running policy demo with greedy actions...");
 
       let steps = 0;
-      const maxSteps = N * N * 2; // simple bound
+      const maxSteps = N * N * 2;
 
       demoInterval = setInterval(() => {
         const sIdx = stateToIndex(state);
-        const action = greedyAction(sIdx);
+        const action = greedyActionIndex(sIdx);
         stepEnvironment(action);
         render();
         updateQValuesDisplay();
@@ -919,7 +1266,9 @@
       }, 200);
     }
 
+    // ==========================
     // Events
+    // ==========================
     nextActionBtn.addEventListener("click", () => {
       if (isRunningPolicyDemo) return;
 
@@ -977,6 +1326,25 @@
         setStatus(`Updated parameters: α=${getAlpha()}, γ=${getGamma()}, ε=${getEpsilon()}.`);
       });
     });
+
+    showArrowsToggle.addEventListener("change", () => {
+      updateQValuesDisplay();
+    });
+
+    // Collapsible paper section
+    (function initPaperCollapse() {
+      const items = document.querySelectorAll(".paper-item");
+      items.forEach((item, idx) => {
+        const header = item.querySelector(".paper-header");
+        if (!header) return;
+        header.addEventListener("click", () => {
+          item.classList.toggle("open");
+        });
+        if (idx === 0) {
+          item.classList.add("open");
+        }
+      });
+    })();
 
     // Initial setup
     initQTable();
