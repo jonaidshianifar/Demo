@@ -61,5 +61,28 @@ Clear explanations of:
 
 
 ---
+## 📚 What You’ll Learn
+This project helps beginners and students understand:
+
+- How Q-learning updates work  
+- What a reward function actually does  
+- The meaning of exploration vs exploitation  
+- How policies evolve over time  
+- Why human-feedback is powerful (RLHF foundations)  
+
+---
+
+## 🧑‍💻 Author
+
+**Jonaid Shianifar**  
+- GitHub: https://github.com/jonaidshianifar  
+- Google Scholar:  https://scholar.google.com/citations?user=tTQUX18AAAAJ&hl=en
+- LinkedIn: https://ie.linkedin.com/in/jonaid-shianifar  
+
+---
+
+## 🤝 Want to Contribute?
+Pull requests are welcome — new environments, new visualizations, improved UI, or anything that helps make RL more accessible.
+
 
 
