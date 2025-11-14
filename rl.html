@@ -13,23 +13,17 @@
       --text-muted: #9ca3af;
       --accent: #3b82f6;
       --accent-soft: rgba(59,130,246,0.2);
+      --danger: #ef4444;
+      --success: #22c55e;
+      --neutral: #4b5563;
       --shadow: 0 18px 40px rgba(15,23,42,0.9);
       --card-radius: 14px;
       --transition-fast: 0.2s ease;
     }
 
-    [data-theme="light"] {
-      --bg: #f5f5f5;
-      --card-bg: #ffffff;
-      --card-border: #e5e7eb;
-      --text: #111827;
-      --text-muted: #6b7280;
-      --accent: #2563eb;
-      --accent-soft: rgba(37,99,235,0.12);
-      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+    * {
+      box-sizing: border-box;
     }
-
-    * { box-sizing: border-box; }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -172,20 +166,9 @@
       transition: background var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
     }
 
-    button:active { transform: scale(0.97); }
-
-    #themeToggle {
-      border-color: var(--accent-soft);
-      background: rgba(15,23,42,0.9);
-      color: var(--text-muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding-inline: 10px;
-      white-space: nowrap;
+    button:active {
+      transform: scale(0.97);
     }
-
-    #themeToggle span { font-size: 0.78rem; }
 
     .header-link-btn {
       display: inline-flex;
@@ -202,6 +185,7 @@
       background: rgba(15,23,42,1);
     }
 
+    /* Pills (section labels) */
     .pill {
       display: inline-flex;
       align-items: center;
@@ -215,14 +199,136 @@
       background: rgba(15,23,42,0.8);
     }
 
-    .pill span.emoji { font-size: 0.9rem; }
+    .pill .emoji {
+      font-size: 0.9rem;
+    }
+
+    /* Research papers collapsible section */
+    .paper-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .paper-item {
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: rgba(15,23,42,0.7);
+      overflow: hidden;
+    }
+
+    .paper-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .paper-title {
+      text-align: left;
+      font-weight: 500;
+      flex: 1;
+      padding-right: 8px;
+    }
+
+    .paper-toggle-icon {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .paper-body {
+      display: none;
+      padding: 6px 10px 10px;
+      border-top: 1px solid var(--card-border);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .paper-item.open .paper-body {
+      display: block;
+    }
+
+    .paper-item.open .paper-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .paper-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: -4px;
+      margin-bottom: 4px;
+    }
+
+    .paper-btn {
+      display: inline-block;
+      margin: 4px 0 4px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .paper-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Social Links Section */
+    #social-links-card h2 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--accent-soft);
+      background: rgba(15,23,42,0.85);
+      color: var(--text);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .social-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
 
     @media (max-width: 800px) {
       header {
         flex-direction: column;
         align-items: flex-start;
       }
-      footer { text-align: left; }
+      footer {
+        text-align: left;
+      }
     }
   </style>
 </head>
@@ -231,17 +337,13 @@
     <div class="title-block">
       <h1>Reinforcement Learning 101</h1>
       <div class="subtitle">
-        Short, friendly overview of RL and algorithms like Q-learning, PPO and SAC.
+        A friendly overview of RL and algorithms like Q-learning, PPO and SAC.
       </div>
     </div>
     <div class="header-actions">
       <a href="index.html" class="header-link-btn">
         <span>←</span><span>Back to demo</span>
       </a>
-      <button id="themeToggle" type="button">
-        <span id="themeIcon">🌙</span>
-        <span id="themeLabel">Dark</span>
-      </button>
     </div>
   </header>
 
@@ -392,6 +494,81 @@ Q(s, a) ← Q(s, a) + α · [ r + γ · max<sub>a'</sub> Q(s', a') − Q(s, a) ]
     </section>
   </main>
 
+  <!-- Research papers section -->
+  <section class="card" id="papers-card" style="max-width:1100px;width:100%;margin:0 16px 10px;">
+    <div class="pill"><span class="emoji">📄</span><span>Read My Research Papers</span></div>
+    <h2 style="margin-top:4px;font-size:0.9rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-muted);">
+      Recent Work & Publications
+    </h2>
+
+    <div class="paper-list">
+      <article class="paper-item">
+        <button class="paper-header" type="button">
+          <span class="paper-title">Adaptive Scalarization in Multi-Objective Reinforcement Learning</span>
+          <span class="paper-toggle-icon">▼</span>
+        </button>
+        <div class="paper-body">
+          <p>
+            Introduces a Dynamic Weight Adjustment (DWA) technique to improve hypervolume and
+            sparsity metrics for robotic arm control. Evaluates DWA across SAC and PPO-based
+            multi-objective RL frameworks.
+          </p>
+          <p class="paper-meta">2024 · Multi-Objective RL · Robotic Control</p>
+          <a href="#" class="paper-btn">View paper (coming soon)</a>
+        </div>
+      </article>
+
+      <article class="paper-item">
+        <button class="paper-header" type="button">
+          <span class="paper-title">Enhancing MORL via Transfer Learning from Single-Objective Tasks</span>
+          <span class="paper-toggle-icon">▼</span>
+        </button>
+        <div class="paper-body">
+          <p>
+            Studies how SAC pretraining stabilizes and accelerates CAPQL in multi-objective
+            environments such as MO-HalfCheetah, improving sample efficiency and policy quality.
+          </p>
+          <p class="paper-meta">2025 · Transfer Learning · Actor-Critic</p>
+          <a href="#" class="paper-btn">View paper (coming soon)</a>
+        </div>
+      </article>
+
+      <article class="paper-item">
+        <button class="paper-header" type="button">
+          <span class="paper-title">Cooperative Evolutionary Reinforcement Learning for Continuous Control</span>
+          <span class="paper-toggle-icon">▼</span>
+        </button>
+        <div class="paper-body">
+          <p>
+            Explores hybrid Evolutionary Algorithm + RL frameworks (CoERL-style) for building
+            diverse policy sets on continuous-control MORL benchmarks, combining preference
+            optimisation with deep RL.
+          </p>
+          <p class="paper-meta">2025 · Evolutionary RL · Continuous Control</p>
+          <a href="#" class="paper-btn">View paper (coming soon)</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Social links section -->
+  <section class="card" id="social-links-card" style="max-width:1100px;width:100%;margin:0 16px 10px;">
+    <h2>Connect With Me</h2>
+    <div class="social-links">
+      <a href="https://github.com/jonaidshianifar" target="_blank" class="social-btn github">
+        <span>🐙</span> GitHub
+      </a>
+
+      <a href="https://scholar.google.com/" target="_blank" class="social-btn scholar">
+        <span>🎓</span> Google Scholar
+      </a>
+
+      <a href="https://www.linkedin.com/" target="_blank" class="social-btn linkedin">
+        <span>💼</span> LinkedIn
+      </a>
+    </div>
+  </section>
+
   <footer>
     Made by
     <a href="https://github.com/jonaidshianifar" target="_blank" rel="noopener noreferrer">
@@ -400,38 +577,10 @@ Q(s, a) ← Q(s, a) + α · [ r + γ · max<sub>a'</sub> Q(s', a') − Q(s, a) ]
   </footer>
 
   <script>
-    // Theme handling (same behaviour as index.html)
-    const themeToggleBtn = document.getElementById("themeToggle");
-    const themeIcon = document.getElementById("themeIcon");
-    const themeLabel = document.getElementById("themeLabel");
-
-    function applyTheme(theme) {
-      document.body.setAttribute("data-theme", theme);
-      if (theme === "light") {
-        themeIcon.textContent = "☀️";
-        themeLabel.textContent = "Light";
-      } else {
-        themeIcon.textContent = "🌙";
-        themeLabel.textContent = "Dark";
-      }
-      localStorage.setItem("humanRewardRLTheme", theme);
-    }
-
-    (function initTheme() {
-      const stored = localStorage.getItem("humanRewardRLTheme");
-      if (stored === "light" || stored === "dark") {
-        applyTheme(stored);
-      } else {
-        const prefersDark = window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches;
-        applyTheme(prefersDark ? "dark" : "light");
-      }
-    })();
-
-    themeToggleBtn.addEventListener("click", () => {
-      const current = document.body.getAttribute("data-theme") || "dark";
-      applyTheme(current === "dark" ? "light" : "dark");
-    });
-  </script>
-</body>
-</html>
+    // Collapsible paper section
+    (function initPaperCollapse() {
+      const items = document.querySelectorAll(".paper-item");
+      items.forEach((item, idx) => {
+        const header = item.querySelector(".paper-header");
+        if (!header) return;
+        header.addEventListe
